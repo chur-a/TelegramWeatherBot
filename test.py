@@ -10,7 +10,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    your_API_code = 'API_code'
+    your_API_code = 'Copy your API here'
     city = update.message.text.title()
     response = requests.get(
         f'https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid={your_API_code}'
@@ -22,10 +22,16 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(update.message.chat.id, "The city is not found.\nPlease, try again.")
 
+
+async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(update.message.chat_id, "Please, text name of the city,"
+                                                           " where you want to find a current weather.\nThank you")
+
 application = ApplicationBuilder().token('TOKEN').build()
 
 
 application.add_handler(CommandHandler('start', start))
 application.add_handler(MessageHandler(filters.TEXT, echo))
+application.add_handler(MessageHandler(~ filters.TEXT, unknown))
 
 application.run_polling()
